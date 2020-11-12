@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: service
+  name: crak8s
+spec:
+  ports:
+    - name: http
+      port: 5002
+      protocol: TCP
+      targetPort: 5002
+  selector:
+    app: crak8s
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: service
+  name: crak8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crak8s
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: service
+        app: crak8s
+    spec:
+      containers:
+        - name: crak8s
+          image: kgromero/cra-docker:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5002
